@@ -23,6 +23,12 @@ export const getDatasById = async (entityName: string, id: string) =>{
     return datas
 }
 
+export const getDatasBySlug = async (entityName: string, slug: string) =>{
+    const url = webApiUrl + entityName+"/by/slug/" + slug
+    const datas = await get(url)
+    return datas
+}
+
 export const getDatasByPage = async (entityName: string, page=1, limit= 5) =>{
     const url = webApiUrl + entityName+"/by/page" + "?pageNumber="+page+ "&pageLimit="+limit
     const datas = await get(url)

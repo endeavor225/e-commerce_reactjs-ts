@@ -1,4 +1,4 @@
-import React, { FC, useEffect, Fragment } from 'react';
+import React, { FC, useEffect, Fragment, useState } from 'react';
 // import Loading from '../Loading/Loading';
 import './Header.css';
 import { Meta } from '../../models/meta';
@@ -9,6 +9,13 @@ import { getAuthState, getCart } from '../../redux/selectors/selectors';
 import { useDispatch } from 'react-redux';
 import { LOGOUT, REMOVE_FROM_CART } from '../../redux/actions/actionTypes';
 import { Article } from '../../models/article';
+import { RequestResponse } from '../../models/requestResponse';
+import { getDatasByPage, searchDatas } from '../../api/entity';
+import { Page } from '../../models/page';
+import { Category } from '../../models/category';
+import { Product } from '../../models/product';
+import { slugify } from '../../helpers/slug';
+import { MegaMenu } from '../../models/mega-menu';
 
 
 
@@ -25,13 +32,31 @@ const Header: FC<HeaderProps> = ({ metas }) => {
   const dispatch = useDispatch()
   // const [loading, setLoading] = useState(true);
   // const [value, setValue] = useState('');
+  const [pages, setPages] = useState<Page[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [megaMenu, setMegaMenu] = useState<MegaMenu[]>([]);
 
   useEffect(() => {
     const runLocalData = async () => {
+      let query = "isTop=true"
+      const data: RequestResponse = await searchDatas("page", query)
+      if (data.isSuccess) {
+        setPages((data.results as Page[]))
+      }
 
+      query = "isMega=true"
+      const categoryData: RequestResponse = await searchDatas("category", query, 1, 4)
+      if (categoryData.isSuccess) {
+        setCategories((categoryData.results as Category[]))
+      }
+
+      const megaCollectionData: RequestResponse = await getDatasByPage("megaCollection",1, 3)
+      if(megaCollectionData.isSuccess){
+        setMegaMenu((megaCollectionData.results as MegaMenu[]))
+      }
     }
     runLocalData()
-  }, [])
+  }, [cart])
 
   const handleLogout = (event: any) => {
     event.preventDefault()
@@ -157,24 +182,15 @@ const Header: FC<HeaderProps> = ({ metas }) => {
                       aria-expanded="false">Pages</Link>
                       <div className="dropdown-menu">
                         <ul >
-                          <li ><a
-                            className="dropdown-item nav-link nav_item" ng-reflect-router-link="/about"
-                            href="/about">About Us</a></li>
-                          <li ><a
-                            className="dropdown-item nav-link nav_item"
-                            ng-reflect-router-link="/contact" href="/contact">Contact Us</a></li>
-                          <li ><a
-                            className="dropdown-item nav-link nav_item" ng-reflect-router-link="/fqa"
-                            href="/fqa">Faq</a></li>
-                          <li ><a
-                            className="dropdown-item nav-link nav_item"
-                            ng-reflect-router-link="/signin" href="/signin">Login</a></li>
-                          <li ><a
-                            className="dropdown-item nav-link nav_item"
-                            ng-reflect-router-link="/signup" href="/signup">Register</a></li>
-                          <li ><a
-                            className="dropdown-item nav-link nav_item" ng-reflect-router-link="/terms"
-                            href="/terms">Terms and Conditions</a></li>
+                          {
+                            pages.map((page: Page) => {
+                              return <li key={page._id}>
+                                <Link className="dropdown-item nav-link nav_item" to={"/page/" + page.slug}>
+                                  {page.name}
+                                </Link>
+                              </li>
+                            })
+                          }
                         </ul>
                       </div>
                     </li>
@@ -183,136 +199,46 @@ const Header: FC<HeaderProps> = ({ metas }) => {
                       className="dropdown-toggle nav-link" aria-expanded="false">Products</a>
                       <div className="dropdown-menu">
                         <ul className="mega-menu d-lg-flex">
-                          <li className="mega-menu-col col-lg-3">
-                            <ul >
-                              <li className="dropdown-header">Robes</li>
-                              <li ><a
-                                className="dropdown-item nav-link nav_item"
-                                ng-reflect-router-link="/,product,bikini-unicolore-cte"
-                                href="/product/bikini-unicolore-ctel-shop">Bikini unicolore
-                                côtelé</a><a
-                                  className="dropdown-item nav-link nav_item"
-                                  ng-reflect-router-link="/,product,jupe-crayon-taille-h"
-                                  href="/product/jupe-crayon-taille-haute-en-dentelle">Jupe crayon
-                                  taille haute en dentelle</a><a
-                                    className="dropdown-item nav-link nav_item"
-                                    ng-reflect-router-link="/,product,jupe-imprim-floral-t"
-                                    href="/product/jupe-imprim-floral-taille-fronce">Jupe à imprimé
-                                  floral à taille froncée</a><a
-                                    className="dropdown-item nav-link nav_item"
-                                    ng-reflect-router-link="/,product,robe-fines-brides-im"
-                                    href="/product/robe-fines-brides-imprim-tropical-en-dentelle">Robe à
-                                  fines brides à imprimé tropical en dentelle</a>
+                          {
+                            categories.map((category: Category) => {
+                              return <li className="mega-menu-col col-lg-3" key={category._id}>
+                                <ul >
+                                  <li className="dropdown-header">{category.name}</li>
+
+                                  {
+                                    category?.products?.map((product: Product) => {
+                                      return <li key={product._id}>
+                                        <Link className="dropdown-item nav-link nav_item" to={"/product/"+slugify(product.name)+"/"+product._id}>
+                                          <img src={product.imageUrls[0]} width={30} height={30}/>
+                                            <span className='p-1'>{product.name}</span>
+                                        </Link>
+
+                                      </li>
+                                    })
+                                  }
+
+                                </ul>
                               </li>
-                            </ul>
-                          </li>
-                          <li className="mega-menu-col col-lg-3">
-                            <ul >
-                              <li className="dropdown-header">Jupes</li>
-                              <li ><a
-                                className="dropdown-item nav-link nav_item"
-                                ng-reflect-router-link="/,product,bikini-unicolore-cte"
-                                href="/product/bikini-unicolore-ctel-shop">Bikini unicolore
-                                côtelé</a><a
-                                  className="dropdown-item nav-link nav_item"
-                                  ng-reflect-router-link="/,product,jupe-noire-brillante"
-                                  href="/product/jupe-noire-brillante">Jupe noire brillante</a><a
-                                    className="dropdown-item nav-link nav_item"
-                                    ng-reflect-router-link="/,product,jupe-fendue-taille-h"
-                                    href="/product/jupe-fendue-taille-haute">Jupe fendue taille
-                                  haute</a><a
-                                    className="dropdown-item nav-link nav_item"
-                                    ng-reflect-router-link="/,product,jupe-imprim-floral-t"
-                                    href="/product/jupe-imprim-floral-taille-fronce">Jupe à imprimé
-                                  floral à taille froncée</a>
-                              </li>
-                            </ul>
-                          </li>
-                          <li className="mega-menu-col col-lg-3">
-                            <ul >
-                              <li className="dropdown-header">Culotes </li>
-                              <li ><a
-                                className="dropdown-item nav-link nav_item"
-                                ng-reflect-router-link="/,product,bikini-unicolore-cte"
-                                href="/product/bikini-unicolore-ctel-shop">Bikini unicolore
-                                côtelé</a><a
-                                  className="dropdown-item nav-link nav_item"
-                                  ng-reflect-router-link="/,product,culotte-en-dentelle-"
-                                  href="/product/culotte-en-dentelle-mudey">Culotte en dentelle</a><a
-                                    className="dropdown-item nav-link nav_item"
-                                    ng-reflect-router-link="/,product,culotte-en-dentelle-"
-                                    href="/product/culotte-en-dentelle-espero">Culotte en dentelle</a><a
-                                      className="dropdown-item nav-link nav_item"
-                                      ng-reflect-router-link="/,product,culotte-en-dentelle"
-                                      href="/product/culotte-en-dentelle">Culotte en dentelle</a><a
-                                        className="dropdown-item nav-link nav_item"
-                                        ng-reflect-router-link="/,product,short-paillettes-bro"
-                                        href="/product/short-paillettes-broderie-dchir">Short à paillettes à
-                                  broderie déchiré</a>
-                              </li>
-                            </ul>
-                          </li>
-                          <li className="mega-menu-col col-lg-3">
-                            <ul >
-                              <li className="dropdown-header">Pantalons</li>
-                              <li ><a
-                                className="dropdown-item nav-link nav_item"
-                                ng-reflect-router-link="/,product,pantalon-taille-haut"
-                                href="/product/pantalon-taille-haute-carreaux-avec-zip">Pantalon
-                                taille haute à carreaux avec zip</a><a
-                                  className="dropdown-item nav-link nav_item"
-                                  ng-reflect-router-link="/,product,pantalon-carreaux-av"
-                                  href="/product/pantalon-carreaux-avec-cordon-la-taille">Pantalon à
-                                  carreaux avec cordon à la taille</a><a
-                                    className="dropdown-item nav-link nav_item"
-                                    ng-reflect-router-link="/,product,pantalon-taille-fron"
-                                    href="/product/pantalon-taille-fronce-poches">Pantalon à taille
-                                  froncée à poches</a><a
-                                    className="dropdown-item nav-link nav_item"
-                                    ng-reflect-router-link="/,product,pantalon-unicolore-t"
-                                    href="/product/pantalon-unicolore-taille-haute">Pantalon unicolore
-                                  taille haute</a>
-                              </li>
-                            </ul>
-                          </li>
+                            })
+                          }
                         </ul>
                         <div className="d-lg-flex menu_banners row g-3 px-3">
-                          <div className="col-sm-4">
-                            <div className="header-banner"><img
-                              alt="menu_banner1"
-                              src="/assets/files/megaCollection/11736749706614988691774027121876766721152610541684827357419.png" />
-                              <div className="banne_info">
-                                <h6 >10% Off</h6>
-                                <h4 >New Arrival</h4><a
-                                  href="http://localhost:4300/">Shop
-                                  Now</a>
+                          {
+                            megaMenu.map((menu: MegaMenu)=>{
+                              return <div className="col-sm-4" key={menu._id}>
+                              <div className="header-banner">
+                                <img
+                                alt="menu_banner1"
+                                src={menu.imageUrl} />
+                                <div className="banne_info">
+                                  <h6 >{menu.description}</h6>
+                                  <h4 >{menu.title}</h4>
+                                  <a href={menu.button_link}>{menu.button_text}</a>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="col-sm-4">
-                            <div className="header-banner"><img
-                              alt="menu_banner1"
-                              src="/assets/files/megaCollection/8932488097310286313588503554459963159142614451684826970123.png" />
-                              <div className="banne_info">
-                                <h6 >15% Off</h6>
-                                <h4 >Men's Fashion</h4><a
-                                  href="http://localhost:4300/">Shop
-                                  Now</a>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-sm-4">
-                            <div className="header-banner"><img
-                              alt="menu_banner1"
-                              src="/assets/files/megaCollection/1412527185807988177642011518607795945067036381684827015102.png" />
-                              <div className="banne_info">
-                                <h6 >23% Off</h6>
-                                <h4 >Kids Fashion</h4><a
-                                  href="http://localhost:4300/">Shop
-                                  Now</a>
-                              </div>
-                            </div>
-                          </div>
+                            })
+                          }
                         </div>
                       </div>
                     </li>
@@ -375,7 +301,7 @@ const Header: FC<HeaderProps> = ({ metas }) => {
                             {
                               cart.items.map(item => {
                                 const { product, quantity } = item
-                                return <li>
+                                return <li key={item.sub_total}>
                                   <a href="#" className="item_remove" onClick={(event) => handleRemoveCartItem(event, item)}>
                                     <i className="ion-close"></i>
                                   </a>

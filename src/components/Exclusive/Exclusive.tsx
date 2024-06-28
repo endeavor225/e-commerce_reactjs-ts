@@ -73,7 +73,6 @@ const Exclusive: FC<ExclusiveProps> = () => {
     const runLocalData = async () => {
       await getProducts()
       setLoading(false)
-      console.log({ products });
     }
     runLocalData()
   }, [loading])

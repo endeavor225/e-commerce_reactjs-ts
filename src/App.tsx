@@ -15,6 +15,8 @@ import SingleProduct from './pages/SingleProduct/SingleProduct'
 import Cart from './pages/Cart/Cart'
 import Checkout from './pages/Checkout/Checkout'
 import NotificationComponent from './components/NotificationComponent/NotificationComponent'
+import PageComponent from './pages/PageComponent/PageComponent'
+import Error from './pages/Error/Error'
 
 
 const App: React.FC = () => {
@@ -46,7 +48,10 @@ const App: React.FC = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/product/:slug/:id" element={<SingleProduct />} />
+          <Route path="/page/:slug" element={<PageComponent />} />
           <Route path="/account" element={<PrivateRoute><Account /></PrivateRoute>} />
+          <Route path="/error" element={<Error />} />
+          <Route path="/*" element={<Error />} />
         </Routes>
       <Footer metas={metas}/>
       <NotificationComponent/>

@@ -22,7 +22,6 @@ interface SingleProductProps {
 
 const SingleProduct: FC<SingleProductProps> = () => {
 
-
   const params = useParams()
   const [loading, setLoading] = useState<boolean>(true)
   const [product, setProduct] = useState<Product | null>(null)
@@ -37,12 +36,9 @@ const SingleProduct: FC<SingleProductProps> = () => {
           setProduct(data)
           setLoading(false)
           console.log(loading);
-          console.log({ slug });
-          console.log(data);
 
           setTimeout(loadScript, 500)
         }
-
       }
 
     }

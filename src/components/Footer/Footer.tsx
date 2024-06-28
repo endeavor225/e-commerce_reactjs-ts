@@ -4,11 +4,15 @@
   App Name : E-commerce with React.Js
   Created At : 21/09/2023 08:09:21
 */
-import React, { FC, useEffect, Fragment } from 'react';
+import React, { FC, useEffect, Fragment, useState } from 'react';
 // import Loading from '../Loading/Loading';
 import './Footer.css';
 import { Meta } from '../../models/meta';
 import { getMetas } from '../../helpers/utils';
+import { RequestResponse } from '../../models/requestResponse';
+import { searchDatas } from '../../api/entity';
+import { Page } from '../../models/page';
+import { Link } from 'react-router-dom';
 
 
 interface FooterProps {
@@ -18,15 +22,20 @@ interface FooterProps {
 
 const Footer: FC<FooterProps> = ({ metas }) => {
 
-
   // const [state, setState] = useState<any>(null)
   // const [loading, setLoading] = useState(true);
   // const [value, setValue] = useState('');
+  const [pages, setPages] = useState<Page[]>([]);
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+   
     const runLocalData = async () => {
 
+      const query = "isBottom=true"
+      const data: RequestResponse = await searchDatas("page", query)
+      if(data.isSuccess){
+        setPages((data.results as Page[]))
+      }
       // setLoading(false)
     }
     runLocalData()
@@ -85,21 +94,15 @@ const Footer: FC<FooterProps> = ({ metas }) => {
                   <div className="widget">
                     <h6 className="widget_title">Useful Links</h6>
                     <ul className="widget_links">
-                      <li ><a
-                        ng-reflect-router-link="/page,a-propos-de-nous-shop"
-                        href="/page/a-propos-de-nous-shop">A Propos de nous</a></li>
-                      <li ><a
-                        ng-reflect-router-link="/page,nos-services-jstore"
-                        href="/page/nos-services-jstore">Nos services</a></li>
-                      <li ><a
-                        ng-reflect-router-link="/page,contactez-nous-category"
-                        href="/page/contactez-nous-category">Contactez-Nous</a></li>
-                      <li ><a
-                        ng-reflect-router-link="/page,nos-partenaires-mudey"
-                        href="/page/nos-partenaires-mudey">Nos partenaires</a></li>
-                      <li ><a
-                        ng-reflect-router-link="/page,mentions-lgales-espero"
-                        href="/page/mentions-lgales-espero">Mentions légales</a></li>
+                    {
+                        pages.map((page: Page)=>{
+                          return  <li key={page._id}>
+                          <Link to={"/page/"+page.slug}>
+                            {page.name}
+                            </Link>
+                          </li>
+                        })
+                      }
                     </ul>
                   </div>
                 </div>
