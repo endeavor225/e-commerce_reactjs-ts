@@ -35,7 +35,7 @@ export default function NotificationComponent() {
     <div className="NotificationComponent">
        {
         notifications?.map((notification)=>{
-          return <div className={"alert alert-"+notification.status} role="alert">
+          return <div key={notification._id} className={"alert alert-"+notification.status} role="alert">
           {notification.message}
 
           <span onClick={()=>handleRemoveNotification(notification)} className="btn btn-close"></span>

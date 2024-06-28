@@ -4,7 +4,7 @@ import { Product } from '../../models/product';
 import { Link } from 'react-router-dom';
 import { formatPrice, generateId, reductionRate } from '../../helpers/utils';
 import { useDispatch } from 'react-redux';
-import { ADD_NOTIFICATION, ADD_TO_CART } from '../../redux/actions/actionTypes';
+import { ADD_NOTIFICATION, ADD_TO_CART, ADD_TO_STORAGE } from '../../redux/actions/actionTypes';
 
 
 interface ProductItemProps {
@@ -45,6 +45,42 @@ const ProductItem : FC<ProductItemProps> = ({product}) =>{
       })
     }
 
+    const addToWishList = (event: any) => {
+      event.preventDefault()
+      dispatch({
+        type: ADD_TO_STORAGE,
+        key: "wishlists",
+        payload: product
+      })
+      dispatch({
+        type: ADD_NOTIFICATION,
+        payload: {
+          _id: generateId(),
+          message: product.name + " added to wish list !",
+          status: "success",
+          timeout: 2000
+        }
+      })
+    }
+
+    /* const addToCompare = (event: any) => {
+      event.preventDefault()
+      dispatch({
+        type: ADD_TO_STORAGE,
+        key: "comparelists",
+        payload: product
+      })
+      dispatch({
+        type: ADD_NOTIFICATION,
+        payload: {
+          _id: generateId(),
+          message: product.name + " added to compare list !",
+          status: "success",
+          timeout: 2000
+        }
+      })
+    } */
+
   return (
     <div className="product">
     <div className="product_img">
@@ -55,9 +91,8 @@ const ProductItem : FC<ProductItemProps> = ({product}) =>{
       </Link>
       <div className="product_action_box">
         <ul className="list_none pr_action_btn">
-          <li className="add-to-cart"><a onClick={addToCart} href="#"><i
-
-              className="icon-basket-loaded"></i> Add To Cart </a>
+          <li className="add-to-cart"><a onClick={addToCart} href="#">
+            <i className="icon-basket-loaded"></i> Add To Cart </a>
           </li>
           <li ><a
             href="shop-compare.html" className="popup-ajax"><i
@@ -67,9 +102,11 @@ const ProductItem : FC<ProductItemProps> = ({product}) =>{
             href="shop-quick-view.html" className="popup-ajax"><i
 
               className="icon-magnifier-add"></i></a></li>
-          <li ><a
-            href="#"><i
-              className="icon-heart"></i></a></li>
+          <li>
+            <a href="#" onClick={addToWishList}>
+              <i className="icon-heart"></i>
+              </a>
+            </li>
         </ul>
       </div>
     </div>

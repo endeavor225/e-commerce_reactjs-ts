@@ -38,6 +38,8 @@ export default function Cart() {
     })
   }
 
+
+
   return (
     <div className="Cart">
       <PageBanner name="Shopping Cart" />
@@ -61,7 +63,7 @@ export default function Cart() {
                     <tbody>
                       {cart.items.map((item) => {
                         return (
-                          <tr>
+                          <tr key={item.sub_total}>
                             <td className="product-thumbnail">
                               <a>
                                 <img
@@ -95,6 +97,7 @@ export default function Cart() {
                                   title="Qty"
                                   size={4}
                                   className="qty"
+                                  onChange={() => item.quantity}
                                 />
                                 <input
                                   type="button"
