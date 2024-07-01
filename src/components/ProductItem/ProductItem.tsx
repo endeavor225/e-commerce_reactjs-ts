@@ -1,10 +1,11 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import './ProductItem.css'
 import { Product } from '../../models/product'
 import { Link } from 'react-router-dom'
 import { formatPrice, generateId, reductionRate } from '../../helpers/utils'
 import { useDispatch } from 'react-redux'
 import {ADD_NOTIFICATION, ADD_TO_CART, ADD_TO_STORAGE} from '../../redux/actions/actionTypes'
+import ModalQuickView from '../ModalQuickView/ModalQuickView'
 
 interface ProductItemProps {
   product: Product
@@ -12,8 +13,10 @@ interface ProductItemProps {
 
 const ProductItem: FC<ProductItemProps> = ({ product }) => {
   const dispatch = useDispatch()
+  const [isQuickView, setIsQuickView] = useState(false)
+
   useEffect(() => {
-    window.scrollTo(0, 0)
+    //window.scrollTo(0, 0)
     const runLocalData = async () => {}
     runLocalData()
   })
@@ -78,6 +81,15 @@ const ProductItem: FC<ProductItemProps> = ({ product }) => {
 
   return (
     <div className="product">
+      {
+        isQuickView ?
+        <ModalQuickView 
+        product={product}
+        close={()=>setIsQuickView(false)}
+        />
+        :
+        null
+      }
       <div className="product_img">
         <Link to={'/product/' + product.slug}>
           <img alt="product_img1" src={product.imageUrls[0]} />
@@ -95,7 +107,7 @@ const ProductItem: FC<ProductItemProps> = ({ product }) => {
               </a>
             </li>
             <li>
-              <a href="shop-quick-view.html" className="popup-ajax">
+              <a onClick={()=>setIsQuickView(!isQuickView)} className="popup-ajax">
                 <i className="icon-magnifier-add"></i>
               </a>
             </li>

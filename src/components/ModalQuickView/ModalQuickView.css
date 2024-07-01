@@ -1,0 +1,5 @@
+
+.ModalQuickView {}
+.ModalQuickView .btn-close{
+  float: right;
+}
