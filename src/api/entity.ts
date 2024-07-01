@@ -35,6 +35,12 @@ export const getDatasByPage = async (entityName: string, page=1, limit= 5) =>{
     return datas
 }
 
+export const addData = async (entityName: string, data: any) =>{
+    const url = webApiUrl + entityName
+    const datas = await post(url,data)
+    return datas
+}
+
 export const signup = async (user: User) =>{
     const url = webApiUrl + "user/signup"
     const datas = await post(url,user)

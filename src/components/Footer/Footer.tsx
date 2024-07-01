@@ -13,6 +13,9 @@ import { RequestResponse } from '../../models/requestResponse';
 import { searchDatas } from '../../api/entity';
 import { Page } from '../../models/page';
 import { Link } from 'react-router-dom';
+import SubscribeComponent from '../SubscribeComponent/SubscribeComponent';
+import { getSuscribed } from '../../redux/selectors/selectors';
+import { useSelector } from 'react-redux';
 
 
 interface FooterProps {
@@ -26,6 +29,7 @@ const Footer: FC<FooterProps> = ({ metas }) => {
   // const [loading, setLoading] = useState(true);
   // const [value, setValue] = useState('');
   const [pages, setPages] = useState<Page[]>([]);
+  const isSuscribed = useSelector(getSuscribed)
 
   useEffect(() => {
    
@@ -44,6 +48,12 @@ const Footer: FC<FooterProps> = ({ metas }) => {
   return (
     <Fragment>
       <div className="Footer">
+        {
+          !isSuscribed ?
+          <SubscribeComponent/>
+          :
+          null
+        }
         <footer className="footer_dark">
           <div className="footer_top">
             <div className="container">
