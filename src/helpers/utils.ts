@@ -1,5 +1,14 @@
 import { Meta } from "../models/meta";
 import { Product } from "../models/product";
+import { getItem } from "../services/localStorage.service";
+
+export const getToken = () => {
+    const auth = getItem("auth");
+    if (auth && auth.token) {
+        return auth.token
+    }
+    return ""
+}
 
 export const getMetas = (metas: Meta[], name: string) => {
     let value = ""
@@ -138,7 +147,7 @@ export const validateSubscribeForm = (values: any) => {
 
 
 export const formatPrice = (price: number, currency: string = "EUR") => {
-    let options = {
+    let options: any = {
         style: "currency",
         currency: currency
     }
