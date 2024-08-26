@@ -13,7 +13,7 @@ export const stockageReducers = (state= initState,
         switch (action.type) {
             case ADD_TO_STORAGE:
                 if(action.key){
-                    if(action.payload?._id){
+                    if(!action.unique){
                         if(!state[action.key]){
                             state[action.key] = []
                         }
@@ -25,6 +25,7 @@ export const stockageReducers = (state= initState,
                         }
 
                     }else{
+                        //unique
                         state[action.key] = action.payload 
                     }
 
@@ -34,7 +35,7 @@ export const stockageReducers = (state= initState,
                 break;
             case REMOVE_FROM_STORAGE:
                 if(action.key){
-                    if(action.payload?._id){
+                    if(!action.unique){
                         if(state[action.key]){
                             
                             const index = state[action.key]
@@ -47,6 +48,7 @@ export const stockageReducers = (state= initState,
                         }
 
                     }else{
+                        // unique
                         delete state[action.key]
                     }
                 }
