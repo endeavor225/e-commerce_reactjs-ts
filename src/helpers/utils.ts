@@ -1,5 +1,7 @@
+import { webApiUrl } from "../environments/environment";
 import { Meta } from "../models/meta";
 import { Product } from "../models/product";
+import { RequestResponse } from "../models/requestResponse";
 import { getItem } from "../services/localStorage.service";
 
 export const getToken = () => {
@@ -8,6 +10,41 @@ export const getToken = () => {
         return auth.token
     }
     return ""
+}
+
+const cleanImage = (imageUrl: string) => {
+    const newImageUrl = webApiUrl + "/assets" + imageUrl.split("/assets")[1]
+    return newImageUrl
+}
+
+export const cleanData = (datas: RequestResponse) => {
+    if (datas.isSuccess) {
+        if (datas?.result) {
+            if (datas?.result?.imageUrl) {
+                datas.result.imageUrl = cleanImage(datas.result.imageUrl)
+            }
+            if (datas?.result?.imageUrls) {
+                datas.result.imageUrls.map((imageUrl: string) => {
+                    return cleanImage(imageUrl)
+                })
+            }
+        }
+
+        if (datas?.results) {
+            datas.results = datas?.results.map((result) => {
+                if (result?.imageUrl) {
+                    result.imageUrl = cleanImage(result.imageUrl)
+                }
+                if (result?.imageUrls) {
+                    result.imageUrls.map((imageUrl: string) => {
+                        return cleanImage(imageUrl)
+                    })
+                }
+                return result
+            });
+        }
+    }
+    return datas
 }
 
 export const getMetas = (metas: Meta[], name: string) => {
@@ -21,7 +58,6 @@ export const getMetas = (metas: Meta[], name: string) => {
 
 export const reductionRate = (product: Product) =>{
     let result  = 0
-    // const { solde_price, regular_price} = product
     result = (product.regular_price - product.solde_price)*100/product.regular_price
     return result.toFixed(0)
 }
