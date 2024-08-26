@@ -19,7 +19,6 @@ interface MainProps {
 
 const Main: FC<MainProps> = () => {
 
-
   // const [state, setState] = useState<any>(null)
   // const [loading, setLoading] = useState(true);
   // const [value, setValue] = useState('');

@@ -4,7 +4,7 @@ import { User } from "../models/user"
 import { setItem } from "../services/localStorage.service"
 
 
-import { get, post } from "./fetchHelpers"
+import { get, post, put, remove } from "./fetchHelpers"
 
 export const getDatas = async (entityName: string) =>{
     const url = webApiUrl + entityName
@@ -38,6 +38,18 @@ export const getDatasByPage = async (entityName: string, page=1, limit= 5) =>{
 export const addData = async (entityName: string, data: any) =>{
     const url = webApiUrl + entityName
     const datas = await post(url,data)
+    return datas
+}
+
+export const updateData = async (entityName: string, id: string, data: any) =>{
+    const url = webApiUrl + entityName+"/"+id
+    const datas = await put(url,data)
+    return datas
+}
+
+export const deleteData = async (entityName: string, id: string) =>{
+    const url = webApiUrl + entityName+"/"+id
+    const datas = await remove(url)
     return datas
 }
 

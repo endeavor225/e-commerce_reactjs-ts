@@ -75,6 +75,8 @@ const Signin: FC<SigninProps> = () => {
           <div className="login_register_wrap section">
             <div className="container">
               <div className="row justify-content-center">
+
+              <p>Bienvenue à nouveau ! Veuillez saisir vos coordonnées</p>
                 <div className="col-xl-6 col-md-10">
                   <div className="login_wrap">
                     <div className="padding_eight_all bg-white">

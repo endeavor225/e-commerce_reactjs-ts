@@ -68,6 +68,34 @@ export const validateRegisterForm = (values: any) => {
     return errors;
 };
 
+export const validateAddressForm = (values: any) => {
+    const errors: any = {};
+    if (!values.address_type) {
+        errors.address_type = 'Required';
+    }
+    if (!values.name) {
+        errors.name = 'Required';
+    } 
+    if (!values.street) {
+        errors.street = 'Required';
+    } 
+
+    if (!values.phone) {
+        errors.phone = 'Required';
+    }
+    if (!values.city) {
+        errors.city = 'Required';
+    }
+    if (!values.code_postal) {
+        errors.code_postal = 'Required';
+    }
+    if (!values.state) {
+        errors.state = 'Required';
+    }
+
+    return errors;
+};
+
 export const validateLoginForm = (values: any) => {
     const errors: any = {};
 

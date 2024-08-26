@@ -3,6 +3,8 @@ import { GlobalState } from "./types/GlobalState"
 
 export const getAuthState = (state: GlobalState) => state.auth.isAuth
 
+export const getUserId = (state: GlobalState) => state.auth.userId
+
 export const getAuthToken = (state: GlobalState) => state.auth.token
 
 export const getCart = (state: GlobalState) => state.cart
