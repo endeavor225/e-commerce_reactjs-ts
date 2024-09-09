@@ -48,7 +48,7 @@ const App: React.FC = () => {
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
           <Route path="/wishlist" element={<WishList />} />
           <Route path="/compare" element={<Compare />} />
           <Route path="/product/:slug/:id" element={<SingleProduct />} />

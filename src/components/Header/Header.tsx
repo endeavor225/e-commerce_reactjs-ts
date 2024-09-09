@@ -3,7 +3,7 @@ import React, { FC, useEffect, Fragment, useState } from 'react'
 import './Header.css'
 import { Meta } from '../../models/meta'
 import { formatPrice, getMetas } from '../../helpers/utils'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { getAuthState, getCart } from '../../redux/selectors/selectors'
 import { useDispatch } from 'react-redux'
@@ -22,6 +22,7 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = ({ metas }) => {
+  const location = useLocation()
   const isAuth = useSelector(getAuthState)
   const cart = useSelector(getCart)
   const dispatch = useDispatch()
@@ -29,36 +30,31 @@ const Header: FC<HeaderProps> = ({ metas }) => {
   const [pages, setPages] = useState<Page[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [megaMenu, setMegaMenu] = useState<MegaMenu[]>([])
+  const excludesPath = ["/checkout"]
 
   useEffect(() => {
-    const runLocalData = async () => {
-      let query = 'isTop=true'
-      const data: RequestResponse = await searchDatas('page', query)
-      if (data.isSuccess) {
-        setPages(data.results as Page[])
+    if(!excludesPath.includes(location.pathname)){
+      const runLocalData = async () => {
+        let query = "isTop=true"
+        const data: RequestResponse = await searchDatas("page", query)
+        if (data.isSuccess) {
+          setPages((data.results as Page[]))
+        }
+        console.log(location);
+  
+        query = "isMega=true"
+        const categoryData: RequestResponse = await searchDatas("category", query, 1, 4)
+        if (categoryData.isSuccess) {
+          setCategories((categoryData.results as Category[]))
+        }
+  
+        const megaCollectionData: RequestResponse = await getDatasByPage("megaCollection", 1, 3)
+        if (megaCollectionData.isSuccess) {
+          setMegaMenu((megaCollectionData.results as MegaMenu[]))
+        }
       }
-
-      query = 'isMega=true'
-      const categoryData: RequestResponse = await searchDatas(
-        'category',
-        query,
-        1,
-        4
-      )
-      if (categoryData.isSuccess) {
-        setCategories(categoryData.results as Category[])
-      }
-
-      const megaCollectionData: RequestResponse = await getDatasByPage(
-        'megaCollection',
-        1,
-        3
-      )
-      if (megaCollectionData.isSuccess) {
-        setMegaMenu(megaCollectionData.results as MegaMenu[])
-      }
+      runLocalData()
     }
-    runLocalData()
   }, [cart])
 
   const handleLogout = (event: any) => {
@@ -82,7 +78,8 @@ const Header: FC<HeaderProps> = ({ metas }) => {
 
   return (
     <Fragment>
-      <div className="Header">
+      {!excludesPath.includes(location.pathname) ? 
+        <div className="Header">
         <header className="header_wrap fixed-top header_with_topbar active">
           <div className="top-header">
             <div className="container">
@@ -520,7 +517,11 @@ const Header: FC<HeaderProps> = ({ metas }) => {
             </div>
           </div>
         </header>
-      </div>
+        </div>
+        : 
+        null
+      }
+      
     </Fragment>
   )
 }
