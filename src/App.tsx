@@ -19,6 +19,7 @@ import PageComponent from './pages/PageComponent/PageComponent'
 import Error from './pages/Error/Error'
 import WishList from './pages/WishList/WishList'
 import Compare from './pages/Compare/Compare'
+import OrderCompleted from './pages/OrderCompleted/OrderCompleted'
 
 
 const App: React.FC = () => {
@@ -51,6 +52,7 @@ const App: React.FC = () => {
           <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
           <Route path="/wishlist" element={<WishList />} />
           <Route path="/compare" element={<Compare />} />
+          <Route path="/stripe-payment-success" element={<OrderCompleted />} />
           <Route path="/product/:slug/:id" element={<SingleProduct />} />
           <Route path="/page/:slug" element={<PageComponent />} />
           <Route path="/account" element={<PrivateRoute><Account /></PrivateRoute>} />

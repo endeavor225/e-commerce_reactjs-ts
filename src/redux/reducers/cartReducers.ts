@@ -1,17 +1,19 @@
 import { sonoreEffet } from '../../helpers/utils';
 import { Article } from '../../models/article';
 import { getItem, setItem } from '../../services/localStorage.service';
-import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/actionTypes";
-import { CartAction, CartGlobalState } from "../actions/types"
+import { ADD_TO_CART, CLEAR_CART, REMOVE_FROM_CART } from '../actions/actionTypes';
+import { CartAction, CartGlobalState } from '../actions/types';
+
 
 const cart = getItem('cart')
 
-const initCart: CartGlobalState = cart ? cart : {
+const initCart: CartGlobalState = cart ?  cart :{
     items: [],
     quantity: 0,
-    sub_total: 0,
+    sub_total: 0
 }
-export const cartReducers = ( state=initCart, action: CartAction={type: null, payload: null}) => {
+
+export const cartReducers = (state=initCart, action: CartAction={type:null, payload: null} ) =>{
     switch (action?.type) {
         case ADD_TO_CART:
             sonoreEffet("success")
@@ -42,24 +44,24 @@ export const cartReducers = ( state=initCart, action: CartAction={type: null, pa
             break;
         case REMOVE_FROM_CART:
             sonoreEffet("change")
-            if (action?.payload) {
-                const index = state.items.findIndex((existing) => existing.product._id === action.payload?.product._id)
-                if (index !== -1) {
-                    state.items[index].quantity -=  action.payload.quantity
-                    state.items[index].sub_total -= action.payload.quantity * action.payload.product.solde_price
-                    if (state.items[index].quantity <= 0) {
+            if( action?.payload){
+                const index = state.items.findIndex((existing)=> existing.product._id === action?.payload?.product._id)
+                if(index !== -1){
+                    state.items[index].quantity -= action.payload.quantity
+                    state.items[index].sub_total -= action.payload.quantity*action.payload.product.solde_price
+                    if(state.items[index].quantity <= 0){
                         state.items.splice(index, 1)
                     }
+                    state.quantity = state.items.reduce((quantity, item)=> quantity + item.quantity, 0)
+                    state.sub_total = state.items.reduce((total, item)=> total + item.sub_total, 0)
                 }
-
-                state.quantity = state.items.reduce((quantity, item)=> quantity + item.quantity, 0)
-                state.sub_total = state.items.reduce((total, item)=> total + item.sub_total, 0)
             }
-            
             setItem('cart', state)
             return {...state}
             break;
-    
+        case CLEAR_CART:
+            setItem('cart', initCart)
+            return {...initCart}
         default:
             return state
             break;

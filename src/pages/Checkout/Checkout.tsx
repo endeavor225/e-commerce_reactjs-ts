@@ -19,11 +19,14 @@ import ManageAddress from '../../components/ManageAddress/ManageAddress';
 import { Address } from '../../models/address';
 import PaimentModal from '../../components/PaimentModal/PaimentModal';
 
+
 interface CheckoutProps {
 
 }
 
+
 const Checkout: FC<CheckoutProps> = () => {
+
 
   const cart = useSelector(getCart)
   let carrier = useSelector(getCarrier)
@@ -76,6 +79,23 @@ const Checkout: FC<CheckoutProps> = () => {
     }
   }
 
+  const handlePay = (event: any) =>{
+    event.preventDefault()
+    const currentAddress = {
+      billingAddress: addresses.filter((a) => a._id === billingAddress)[0],
+      shippingAddress: addresses.filter((a) => a._id === shippingAddress)[0]
+    }
+
+    dispatch({
+      type: ADD_TO_STORAGE,
+      key: "currentAddress",
+      unique: true,
+      payload: currentAddress
+    })
+
+    setOpenPayNowModal(true)
+  }
+
   return (
     <div className="Checkout">
       {/* <PageBanner name="Checkout" /> */}
@@ -122,7 +142,7 @@ const Checkout: FC<CheckoutProps> = () => {
                   </div>
                   <div className="heading_s1">
                     <h4>Shipping Details</h4>
-                    <select name="billing_address" className='form-control'
+                    <select name="shipping_address" className='form-control'
                     onChange={(e)=>setShippingAddress(e.target.value)}
                     >
                       <option value="">Select your shipping address ...</option>
@@ -187,7 +207,6 @@ const Checkout: FC<CheckoutProps> = () => {
                                   alt="product image"
                                   width={30}
                                   height={30}
-                                  className="me-2"
                                 />
 
                                 {item.product.name}
@@ -199,7 +218,6 @@ const Checkout: FC<CheckoutProps> = () => {
                             </tr>
                           })
                         }
-
 
                       </tbody>
                       <tfoot>
@@ -231,7 +249,7 @@ const Checkout: FC<CheckoutProps> = () => {
                   {
                     billingAddress && shippingAddress && !openPayNowModal?
                   <a href="#" className="btn btn-fill-out btn-block" 
-                  onClick={()=>setOpenPayNowModal(true)}
+                  onClick={handlePay}
                   >
                     Pay Now ({formatPrice(cart.sub_total + (carrier?.price || 0))})
                   </a>
