@@ -129,7 +129,7 @@ const Checkout: FC<CheckoutProps> = () => {
                       <option value="">Select your billing address ...</option>
                       {
                         addresses.map((address: Address) => {
-                          return <option value={address._id} >
+                          return <option key={address._id} value={address._id} >
                             {address.name} &nbsp;
                             {address.street} &nbsp;
                             {address.code_postal} &nbsp;
@@ -148,7 +148,7 @@ const Checkout: FC<CheckoutProps> = () => {
                       <option value="">Select your shipping address ...</option>
                       {
                         addresses.map((address) => {
-                          return <option value={address._id}>
+                          return <option key={address._id} value={address._id}>
                             {address.name} &nbsp;
                             {address.street}  &nbsp;
                             {address.code_postal} &nbsp;
@@ -174,7 +174,7 @@ const Checkout: FC<CheckoutProps> = () => {
                       <option disabled={true}>Select your carrier ...</option>
                       {
                         carriers.map((currentCarrier) => {
-                          return <option value={currentCarrier._id}>
+                          return <option key={currentCarrier._id} value={currentCarrier._id}>
                             {currentCarrier.name} ({formatPrice(currentCarrier.price)})
                           </option>
                         })
@@ -200,7 +200,7 @@ const Checkout: FC<CheckoutProps> = () => {
                       <tbody>
                         {
                           cart.items.map((item) => {
-                            return <tr>
+                            return <tr key={item.product._id}>
                               <td>
                                 <img
                                   src={item.product.imageUrls[0]}
@@ -218,6 +218,7 @@ const Checkout: FC<CheckoutProps> = () => {
                             </tr>
                           })
                         }
+
 
                       </tbody>
                       <tfoot>
@@ -248,11 +249,14 @@ const Checkout: FC<CheckoutProps> = () => {
                   <div className="payment_method"></div>
                   {
                     billingAddress && shippingAddress && !openPayNowModal?
+                  <div className="payment-button">
                   <a href="#" className="btn btn-fill-out btn-block" 
                   onClick={handlePay}
                   >
                     Pay Now ({formatPrice(cart.sub_total + (carrier?.price || 0))})
                   </a>
+
+                  </div>
                   :
                   <div>
                     Please, select your billing and shipping address.

@@ -52,6 +52,7 @@ const App: React.FC = () => {
           <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
           <Route path="/wishlist" element={<WishList />} />
           <Route path="/compare" element={<Compare />} />
+          <Route path="/paypal-payment-success" element={<OrderCompleted />} />
           <Route path="/stripe-payment-success" element={<OrderCompleted />} />
           <Route path="/product/:slug/:id" element={<SingleProduct />} />
           <Route path="/page/:slug" element={<PageComponent />} />

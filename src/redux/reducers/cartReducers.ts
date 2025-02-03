@@ -60,8 +60,13 @@ export const cartReducers = (state=initCart, action: CartAction={type:null, payl
             return {...state}
             break;
         case CLEAR_CART:
-            setItem('cart', initCart)
-            return {...initCart}
+            const newCart = {
+                items: [],
+                quantity: 0,
+                sub_total: 0
+            }
+            setItem('cart', newCart)
+            return {...newCart}
         default:
             return state
             break;
